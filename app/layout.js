@@ -5,12 +5,14 @@ import Navbar from "../components/Navbar";
 
 // --- FONT ---
 const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["400", "700", "900"],
+  subsets: ["latin"], // można dać ["latin", "latin-ext"], jeśli chcesz
+  weight: ["400", "700"], // 900 wywal, jeśli nie potrzebujesz
+  display: "swap", // ważne dla performance – nie blokuje renderu tekstu
 });
 
 // --- METADATA ---
 export const metadata = {
+  metadataBase: new URL("https://morskapolana.pl"),
   title: "Morska Polana — Prywatny kurort w Mielnie",
   description:
     "Domy całoroczne i letnie na 2 hektarach prywatnego terenu. Psy i koty mile widziane. Sprawdź wolne terminy.",
@@ -31,6 +33,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${montserrat.className} bg-[#0f172a] text-white antialiased`}
       >
+        {/* --- SKIP LINK --- */}
         <a href="#main" className="sr-only">
           Przejdź do treści głównej
         </a>

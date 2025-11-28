@@ -1,0 +1,11 @@
+# --- ROBOTS DLA MORSKA POLANA ---
+
+User-agent: *
+Allow: /
+
+# Blokada ewentualnych stron testowych (przykład, możesz usunąć jeśli nie używasz)
+Disallow: /admin
+Disallow: /test
+Disallow: /draft
+
+Sitemap: https://morskapolana.pl/sitemap.xml

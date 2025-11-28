@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
+
 // --- METADATA ---
 export const metadata = {
   title: "Willa Imperium — 100 m² dla 10 osób | Morska Polana",
