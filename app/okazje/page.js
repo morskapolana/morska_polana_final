@@ -7,13 +7,18 @@ export const metadata = {
   title: "Specjalne okazje i pakiety — Morska Polana",
   description:
     "Sylwester, morsowanie, Walentynki, Boże Narodzenie, Majówka i Wakacje nad Bałtykiem. Zobacz specjalne pakiety w Morskiej Polanie w Mielnie.",
-  alternates: { canonical: "https://morskapolana.pl/okazje" },
+  alternates: { canonical: "https://beta.morskapolana.pl/okazje" },
   openGraph: {
     title: "Specjalne okazje — Morska Polana",
     description:
       "Wyjątkowe pakiety: Sylwester, morsowanie, Walentynki, Boże Narodzenie, Majówka i Wakacje. Rezerwuj z wyprzedzeniem i zyskaj najlepsze ceny.",
-    url: "https://morskapolana.pl/okazje",
+    url: "https://beta.morskapolana.pl/okazje",
     type: "website",
+    images: ["/baltyk.webp"], // obrazek do podglądu przy udostępnianiu
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
@@ -147,21 +152,36 @@ export default function OkazjePage() {
       {/* --- GŁÓWNA ZAWARTOŚĆ --- */}
       <section className="py-16 px-6">
         <div className="max-w-7xl mx-auto">
-          {/* --- FILTRY (NA RAZIE STATYCZNE) --- */}
+          {/* --- FILTRY (STATYCZNE) --- */}
           <div className="flex flex-wrap gap-4 justify-center mb-12">
-            <button className="bg-yellow-500 text-[#0f172a] px-6 py-3 rounded-full font-bold hover:bg-yellow-400 transition">
+            <button
+              type="button"
+              className="bg-yellow-500 text-[#0f172a] px-6 py-3 rounded-full font-bold hover:bg-yellow-400 transition"
+            >
               Wszystkie
             </button>
-            <button className="bg-slate-800 text-white px-6 py-3 rounded-full font-bold hover:bg-slate-700 transition border border-slate-700">
+            <button
+              type="button"
+              className="bg-slate-800 text-white px-6 py-3 rounded-full font-bold hover:bg-slate-700 transition border border-slate-700"
+            >
               Zima
             </button>
-            <button className="bg-slate-800 text-white px-6 py-3 rounded-full font-bold hover:bg-slate-700 transition border border-slate-700">
+            <button
+              type="button"
+              className="bg-slate-800 text-white px-6 py-3 rounded-full font-bold hover:bg-slate-700 transition border border-slate-700"
+            >
               Wiosna
             </button>
-            <button className="bg-slate-800 text-white px-6 py-3 rounded-full font-bold hover:bg-slate-700 transition border border-slate-700">
+            <button
+              type="button"
+              className="bg-slate-800 text-white px-6 py-3 rounded-full font-bold hover:bg-slate-700 transition border border-slate-700"
+            >
               Lato
             </button>
-            <button className="bg-slate-800 text-white px-6 py-3 rounded-full font-bold hover:bg-slate-700 transition border border-slate-700">
+            <button
+              type="button"
+              className="bg-slate-800 text-white px-6 py-3 rounded-full font-bold hover:bg-slate-700 transition border border-slate-700"
+            >
               Jesień
             </button>
           </div>
@@ -187,6 +207,7 @@ export default function OkazjePage() {
                     src={promo.image}
                     alt={promo.title}
                     fill
+                    loading="lazy"
                     className="object-cover group-hover:scale-110 transition duration-500"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
@@ -233,7 +254,10 @@ export default function OkazjePage() {
                     >
                       Rezerwuj
                     </Link>
-                    <button className="flex-1 bg-slate-700 text-white py-3 rounded-lg font-bold hover:bg-slate-600 transition border border-slate-600">
+                    <button
+                      type="button"
+                      className="flex-1 bg-slate-700 text-white py-3 rounded-lg font-bold hover:bg-slate-600 transition border border-slate-600"
+                    >
                       Szczegóły
                     </button>
                   </div>
