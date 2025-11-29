@@ -1,19 +1,22 @@
+// --- IMPORTY --- 
 import Image from "next/image";
 import Link from "next/link";
 import { getActiveCampaign } from "../lib/seasonalCampaigns";
 
-// Server Action do newslettera (prosta wersja)
+// --- SERVER ACTION DO NEWSLETTERA (PROSTA WERSJA) ---
 async function subscribe(formData) {
   "use server";
   console.log("Zapisano email:", formData.get("email"));
 }
 
+// --- STRONA GŁÓWNA ---
 export default function Home() {
   // --- SEZONOWA KAMPANIA DLA HERO ---
   const campaign = getActiveCampaign();
 
   const heroBadgeText = campaign?.badgeText || "★ Nr #1 w Mielnie";
-  const heroTitle = campaign?.heroTitle || "Morska Polana";
+  const heroTitle =
+    campaign?.heroTitle || "Morska Polana";
   const heroSubtitle =
     campaign?.heroSubtitle ||
     "Doświadcz luksusu przestrzeni. Jedyny w Mielnie prywatny kurort na 2 hektarach terenu.";
@@ -21,13 +24,22 @@ export default function Home() {
   const heroCtaLabel = campaign?.ctaLabel || "Zarezerwuj Twierdzę";
   const heroCtaHref = campaign?.ctaHref || "#oferta";
 
+  // --- PODZIAŁ TYTUŁU NA CZĘŚĆ GŁÓWNĄ I PODKREŚLONĄ (DZIAŁA TEŻ DLA INNYCH H1) ---
+  const [heroFirstWord, ...heroRestWords] = heroTitle.split(" ");
+  const heroTitlePrimary = heroFirstWord;
+  const heroTitleHighlight = heroRestWords.join(" ");
+
   return (
     <main className="min-h-screen bg-[#0f172a] text-white font-sans selection:bg-yellow-500 selection:text-black">
-      {/* --- HERO SECTION (FULL WIDTH) --- */}
-      <header className="relative h-[620px] md:h-[680px] lg:h-[720px] overflow-hidden flex flex-col items-center justify-center text-center px-4">
-        {/* TŁO: Upewnij się, że masz plik baltyk.webp w folderze public */}
+      {/* --- 0. HERO SECTION (FULL WIDTH) --- */}
+      <header
+        className="relative h-[620px] md:h-[680px] lg:h-[720px] overflow-hidden flex flex-col items-center justify-center text-center px-4"
+        aria-labelledby="hero-heading"
+        aria-describedby="hero-subtitle"
+      >
+        {/* --- TŁO HERO (OBRAZ) --- */}
         <Image
-          src="/baltyk.webp"
+          src={heroImageSrc}
           alt="Morze Bałtyckie w Mielnie"
           fill
           priority
@@ -36,28 +48,39 @@ export default function Home() {
         />
         <div className="absolute inset-0 bg-[#0f172a]/30" aria-hidden="true" />
 
+        {/* --- TREŚĆ HERO --- */}
         <div className="relative z-10">
           <div className="bg-yellow-500 text-[#0f172a] px-6 py-2 rounded-full font-black text-xs uppercase tracking-widest mb-6 shadow-lg inline-block animate-pulse">
-            ★ Nr #1 w Mielnie
+            {heroBadgeText}
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-white mb-6 leading-tight drop-shadow-2xl">
-            Morska <span className="text-yellow-500">Polana</span>
+          <h1
+            id="hero-heading"
+            className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-white mb-6 leading-tight drop-shadow-2xl"
+          >
+            {heroTitlePrimary}{" "}
+            {heroTitleHighlight ? (
+              <span className="text-yellow-500">{heroTitleHighlight}</span>
+            ) : (
+              <span className="text-yellow-500">Polana</span>
+            )}
           </h1>
 
-          <p className="text-lg md:text-2xl text-white max-w-5xl mt-2 font-bold leading-relaxed drop-shadow-lg text-shadow-md mx-auto">
-            Doświadcz luksusu przestrzeni. Jedyny w Mielnie prywatny kurort na 2
-            hektarach terenu.
+          <p
+            id="hero-subtitle"
+            className="text-lg md:text-2xl text-white max-w-5xl mt-2 font-bold leading-relaxed drop-shadow-lg text-shadow-md mx-auto"
+          >
+            {heroSubtitle}
             <br className="hidden md:block" />
             <strong>Odetchnij Lasem. Poczuj Bałtyk. Wybierz Wolność.</strong>
           </p>
 
           <div className="mt-10 flex flex-col md:flex-row gap-6 justify-center">
             <Link
-              href="#oferta"
+              href={heroCtaHref}
               className="bg-yellow-500 text-[#0f172a] px-8 py-4 rounded-lg font-black text-lg uppercase tracking-wider hover:bg-yellow-600 transition shadow-[0_0_20px_rgba(234,179,8,0.5)]"
             >
-              Zarezerwuj Twierdzę
+              {heroCtaLabel}
             </Link>
 
             <Link
@@ -69,7 +92,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* STATYSTYKI - ZIELONE (FULL WIDTH, OK) */}
+        {/* --- STATYSTYKI (NA DOLE HERO) --- */}
         <div className="absolute bottom-0 w-full bg-emerald-900/95 border-t border-emerald-700 py-6 flex justify-around backdrop-blur-sm text-center z-10">
           <div>
             <p className="text-xl md:text-3xl font-black text-white">
@@ -96,7 +119,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* --- GŁÓWNY WYŚRODKOWANY BLOK STRONY --- */}
+      {/* --- GŁÓWNY BLOK STRONY --- */}
       <div className="max-w-7xl mx-auto px-6">
         {/* --- 1. OFERTA (DOMKI) --- */}
         <section id="oferta" className="py-24 border-b border-slate-800">
@@ -111,12 +134,12 @@ export default function Home() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
+              {/* --- KAFEL: WILLE IMPERIUM --- */}
               <Link
                 href="/willa"
                 className="group block bg-slate-800 rounded-xl overflow-hidden border border-slate-700 hover:border-yellow-500 hover:-translate-y-2 transition duration-300 cursor-pointer"
               >
                 <div className="relative h-64">
-                  {/* Pamiętaj o pliku willa.webp w folderze public */}
                   <Image
                     src="/willa-imperium.webp"
                     alt="Willa Imperium"
@@ -152,6 +175,7 @@ export default function Home() {
                 </div>
               </Link>
 
+              {/* --- KAFEL: BASTION --- */}
               <Link
                 href="/bastion"
                 className="group block bg-slate-800 rounded-xl overflow-hidden border border-slate-700 hover:border-yellow-500 hover:-translate-y-2 transition duration-300 cursor-pointer"
@@ -192,6 +216,7 @@ export default function Home() {
                 </div>
               </Link>
 
+              {/* --- KAFEL: LETNIE --- */}
               <Link
                 href="/letnie"
                 className="group block bg-slate-800 rounded-xl overflow-hidden border border-slate-700 hover:border-yellow-500 hover:-translate-y-2 transition duration-300 cursor-pointer"
@@ -233,234 +258,273 @@ export default function Home() {
         </section>
 
         {/* --- 2. KALENDARZ OKAZJI --- */}
-<section id="okazje" className="py-24 px-6 bg-[#141e33] border-b border-slate-800">
-  <div className="max-w-[1600px] mx-auto">
-    <div className="text-center mb-16">
-      <h2 className="text-4xl font-black uppercase text-yellow-500 mb-4">Kiedy nas odwiedzisz?</h2>
-      <p className="text-gray-300 text-lg">U nas sezon trwa cały rok.</p>
-    </div>
+        <section
+          id="okazje"
+          className="py-24 px-6 bg-[#141e33] border-b border-slate-800"
+        >
+          <div className="max-w-[1600px] mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-black uppercase text-yellow-500 mb-4">
+                Kiedy nas odwiedzisz?
+              </h2>
+              <p className="text-gray-300 text-lg">U nas sezon trwa cały rok.</p>
+            </div>
 
-    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <Link href="/okazje" className="bg-slate-800 rounded-lg overflow-hidden border-t-4 border-yellow-500 group h-full hover:scale-105 transition block">
-        <div className="relative h-48">
-          <Image
-            src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1000"
-            alt="Sylwester"
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          />
-        </div>
-        <div className="p-5 text-center">
-          <h3 className="font-bold text-white text-xl mb-2">Sylwester i Boże Narodzenie</h3>
-          <span className="text-xs text-yellow-500 font-bold block bg-yellow-500/10 py-2 rounded">
-            Grudzień / Styczeń
-          </span>
-        </div>
-      </Link>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Link
+                href="/okazje"
+                className="bg-slate-800 rounded-lg overflow-hidden border-t-4 border-yellow-500 group h-full hover:scale-105 transition block"
+              >
+                <div className="relative h-48">
+                  <Image
+                    src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1000"
+                    alt="Sylwester"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
+                </div>
+                <div className="p-5 text-center">
+                  <h3 className="font-bold text-white text-xl mb-2">
+                    Sylwester i Boże Narodzenie
+                  </h3>
+                  <span className="text-xs text-yellow-500 font-bold block bg-yellow-500/10 py-2 rounded">
+                    Grudzień / Styczeń
+                  </span>
+                </div>
+              </Link>
 
-      <Link href="/okazje" className="bg-slate-800 rounded-lg overflow-hidden border-t-4 border-blue-400 group h-full hover:scale-105 transition block">
-        <div className="relative h-48">
-          <Image
-            src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?q=80&w=800"
-            alt="Morsy"
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          />
-        </div>
-        <div className="p-5 text-center">
-          <h3 className="font-bold text-white text-xl mb-2">Morsy</h3>
-          <span className="text-xs text-blue-400 font-bold block bg-blue-400/10 py-2 rounded">
-            Styczeń - Marzec
-          </span>
-        </div>
-      </Link>
+              <Link
+                href="/okazje"
+                className="bg-slate-800 rounded-lg overflow-hidden border-t-4 border-blue-400 group h-full hover:scale-105 transition block"
+              >
+                <div className="relative h-48">
+                  <Image
+                    src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?q=80&w=800"
+                    alt="Morsy"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
+                </div>
+                <div className="p-5 text-center">
+                  <h3 className="font-bold text-white text-xl mb-2">Morsy</h3>
+                  <span className="text-xs text-blue-400 font-bold block bg-blue-400/10 py-2 rounded">
+                    Styczeń - Marzec
+                  </span>
+                </div>
+              </Link>
 
-      <Link href="/okazje" className="bg-slate-800 rounded-lg overflow-hidden border-t-4 border-pink-500 group h-full hover:scale-105 transition block">
-        <div className="relative h-48">
-          <Image
-            src="https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?q=80&w=800"
-            alt="Walentynki"
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          />
-        </div>
-        <div className="p-5 text-center">
-          <h3 className="font-bold text-white text-xl mb-2">Walentynki</h3>
-          <span className="text-xs text-pink-500 font-bold block bg-pink-500/10 py-2 rounded">
-            Luty
-          </span>
-        </div>
-      </Link>
+              <Link
+                href="/okazje"
+                className="bg-slate-800 rounded-lg overflow-hidden border-t-4 border-pink-500 group h-full hover:scale-105 transition block"
+              >
+                <div className="relative h-48">
+                  <Image
+                    src="https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?q=80&w=800"
+                    alt="Walentynki"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
+                </div>
+                <div className="p-5 text-center">
+                  <h3 className="font-bold text-white text-xl mb-2">
+                    Walentynki
+                  </h3>
+                  <span className="text-xs text-pink-500 font-bold block bg-pink-500/10 py-2 rounded">
+                    Luty
+                  </span>
+                </div>
+              </Link>
 
-      <Link href="/okazje" className="bg-slate-800 rounded-lg overflow-hidden border-t-4 border-green-500 group h-full hover:scale-105 transition block">
-        <div className="relative h-48">
-          <Image
-            src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800"
-            alt="Majówka"
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          />
-        </div>
-        <div className="p-5 text-center">
-          <h3 className="font-bold text-white text-xl mb-2">Majówka</h3>
-          <span className="text-xs text-green-500 font-bold block bg-green-500/10 py-2 rounded">
-            Maj
-          </span>
-        </div>
-      </Link>
+              <Link
+                href="/okazje"
+                className="bg-slate-800 rounded-lg overflow-hidden border-t-4 border-green-500 group h-full hover:scale-105 transition block"
+              >
+                <div className="relative h-48">
+                  <Image
+                    src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800"
+                    alt="Majówka"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
+                </div>
+                <div className="p-5 text-center">
+                  <h3 className="font-bold text-white text-xl mb-2">Majówka</h3>
+                  <span className="text-xs text-green-500 font-bold block bg-green-500/10 py-2 rounded">
+                    Maj
+                  </span>
+                </div>
+              </Link>
 
-      <Link href="/okazje" className="bg-slate-800 rounded-lg overflow-hidden border-t-4 border-green-500 group h-full hover:scale-105 transition block">
-        <div className="relative h-48">
-          <Image
-            src="https://images.unsplash.com/photo-1477414348463-c0eb7f1359b6?q=80&w=800"
-            alt="Boże Ciało"
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          />
-        </div>
-        <div className="p-5 text-center">
-          <h3 className="font-bold text-white text-xl mb-2">Boże Ciało</h3>
-          <span className="text-xs text-green-500 font-bold block bg-green-500/10 py-2 rounded">
-            Czerwiec
-          </span>
-        </div>
-      </Link>
+              <Link
+                href="/okazje"
+                className="bg-slate-800 rounded-lg overflow-hidden border-t-4 border-green-500 group h-full hover:scale-105 transition block"
+              >
+                <div className="relative h-48">
+                  <Image
+                    src="https://images.unsplash.com/photo-1477414348463-c0eb7f1359b6?q=80&w=800"
+                    alt="Boże Ciało"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
+                </div>
+                <div className="p-5 text-center">
+                  <h3 className="font-bold text-white text-xl mb-2">
+                    Boże Ciało
+                  </h3>
+                  <span className="text-xs text-green-500 font-bold block bg-green-500/10 py-2 rounded">
+                    Czerwiec
+                  </span>
+                </div>
+              </Link>
 
-      <Link href="/okazje" className="bg-slate-800 rounded-lg overflow-hidden border-t-4 border-orange-500 relative group hover:scale-105 transition block">
-        <div className="absolute top-0 right-0 bg-orange-500 text-white text-[10px] font-bold px-2 py-1 z-10">
-          HIT
-        </div>
-        <div className="relative h-48">
-          <Image
-            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800"
-            alt="WAKACJE"
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          />
-        </div>
-        <div className="p-5 text-center">
-          <h3 className="font-bold text-white text-xl mb-2">WAKACJE</h3>
-          <span className="text-xs text-orange-500 font-bold block bg-orange-500/10 py-2 rounded">
-            Lipiec / Sierpień
-          </span>
-        </div>
-      </Link>
+              <Link
+                href="/okazje"
+                className="bg-slate-800 rounded-lg overflow-hidden border-t-4 border-orange-500 relative group hover:scale-105 transition block"
+              >
+                <div className="absolute top-0 right-0 bg-orange-500 text-white text-[10px] font-bold px-2 py-1 z-10">
+                  HIT
+                </div>
+                <div className="relative h-48">
+                  <Image
+                    src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800"
+                    alt="WAKACJE"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
+                </div>
+                <div className="p-5 text-center">
+                  <h3 className="font-bold text-white text-xl mb-2">WAKACJE</h3>
+                  <span className="text-xs text-orange-500 font-bold block bg-orange-500/10 py-2 rounded">
+                    Lipiec / Sierpień
+                  </span>
+                </div>
+              </Link>
 
-      <Link href="/okazje" className="bg-slate-800 rounded-lg overflow-hidden border-t-4 border-yellow-500 group h-full hover:scale-105 transition block">
-        <div className="relative h-48">
-          <Image
-            src="https://images.unsplash.com/photo-1477414348463-c0eb7f1359b6?q=80&w=800"
-            alt="Jesień"
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          />
-        </div>
-        <div className="p-5 text-center">
-          <h3 className="font-bold text-white text-xl mb-2">Złota Jesień</h3>
-          <span className="text-xs text-yellow-500 font-bold block bg-yellow-500/10 py-2 rounded">
-            Wrzesień / Październik
-          </span>
-        </div>
-      </Link>
+              <Link
+                href="/okazje"
+                className="bg-slate-800 rounded-lg overflow-hidden border-t-4 border-yellow-500 group h-full hover:scale-105 transition block"
+              >
+                <div className="relative h-48">
+                  <Image
+                    src="https://images.unsplash.com/photo-1477414348463-c0eb7f1359b6?q=80&w=800"
+                    alt="Jesień"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
+                </div>
+                <div className="p-5 text-center">
+                  <h3 className="font-bold text-white text-xl mb-2">
+                    Złota Jesień
+                  </h3>
+                  <span className="text-xs text-yellow-500 font-bold block bg-yellow-500/10 py-2 rounded">
+                    Wrzesień / Październik
+                  </span>
+                </div>
+              </Link>
 
-      <Link href="/okazje" className="bg-slate-800 rounded-lg overflow-hidden border-t-4 border-yellow-500 group h-full hover:scale-105 transition block">
-        <div className="relative h-48">
-          <Image
-            src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=800"
-            alt="Pupil"
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          />
-        </div>
-        <div className="p-5 text-center">
-          <h3 className="font-bold text-white text-xl mb-2">Pobyt z Pupilem</h3>
-          <span className="text-xs text-yellow-500 font-bold block bg-yellow-500/10 py-2 rounded">
-            Cały Rok
-          </span>
-        </div>
-      </Link>
-    </div>
-  </div>
-</section>
+              <Link
+                href="/okazje"
+                className="bg-slate-800 rounded-lg overflow-hidden border-t-4 border-yellow-500 group h-full hover:scale-105 transition block"
+              >
+                <div className="relative h-48">
+                  <Image
+                    src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=800"
+                    alt="Pupil"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
+                </div>
+                <div className="p-5 text-center">
+                  <h3 className="font-bold text-white text-xl mb-2">
+                    Pobyt z Pupilem
+                  </h3>
+                  <span className="text-xs text-yellow-500 font-bold block bg-yellow-500/10 py-2 rounded">
+                    Cały Rok
+                  </span>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </section>
 
-       {/* --- 3. ATRAKCJE --- */}
-<section id="atrakcje" className="py-24 border-b border-slate-800">
-  <div className="max-w-5xl mx-auto">
-    <h2 className="text-4xl font-black uppercase text-yellow-500 mb-12 text-center">
-      Teren i Okolica
-    </h2>
+        {/* --- 3. ATRAKCJE --- */}
+        <section id="atrakcje" className="py-24 border-b border-slate-800">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-4xl font-black uppercase text-yellow-500 mb-12 text-center">
+              Teren i Okolica
+            </h2>
 
-    <div className="grid md:grid-cols-3 gap-12 justify-items-center">
-      <div className="w-full max-w-xs">
-        <h3 className="text-xl text-cyan-400 font-bold mb-6 border-b border-cyan-400 inline-block">
-          ✈️ Woda i Powietrze
-        </h3>
-        <div className="mb-6">
-          <h4 className="font-bold text-white text-lg">
-            Loty widokowe nad Mielnem
-          </h4>
-          <p className="text-sm text-gray-400">
-            Zobacz wybrzeże z lotu ptaka.
-          </p>
-        </div>
-        <div className="mb-6">
-          <h4 className="font-bold text-white text-lg">
-            Aquapark Koszalin
-          </h4>
-          <p className="text-sm text-gray-400">
-            15 min autem. Zjeżdżalnie i sauny.
-          </p>
-        </div>
-      </div>
+            <div className="grid md:grid-cols-3 gap-12 justify-items-center">
+              <div className="w-full max-w-xs">
+                <h3 className="text-xl text-cyan-400 font-bold mb-6 border-b border-cyan-400 inline-block">
+                  ✈️ Woda i Powietrze
+                </h3>
+                <div className="mb-6">
+                  <h4 className="font-bold text-white text-lg">
+                    Loty widokowe nad Mielnem
+                  </h4>
+                  <p className="text-sm text-gray-400">
+                    Zobacz wybrzeże z lotu ptaka.
+                  </p>
+                </div>
+                <div className="mb-6">
+                  <h4 className="font-bold text-white text-lg">
+                    Aquapark Koszalin
+                  </h4>
+                  <p className="text-sm text-gray-400">
+                    15 min autem. Zjeżdżalnie i sauny.
+                  </p>
+                </div>
+              </div>
 
-      <div className="w-full max-w-xs">
-        <h3 className="text-xl text-cyan-400 font-bold mb-6 border-b border-cyan-400 inline-block">
-          🏐 Sport i Zabawa
-        </h3>
-        <div className="mb-6">
-          <h4 className="font-bold text-white text-lg">
-            Boisko do Siatkówki
-          </h4>
-          <p className="text-sm text-gray-400">
-            Profesjonalne boisko na piasku.
-          </p>
-        </div>
-        <div className="mb-6">
-          <h4 className="font-bold text-white text-lg">
-            Dmuchaniec Gigant
-          </h4>
-          <p className="text-sm text-gray-400">8x3 metry radości.</p>
-        </div>
-      </div>
+              <div className="w-full max-w-xs">
+                <h3 className="text-xl text-cyan-400 font-bold mb-6 border-b border-cyan-400 inline-block">
+                  🏐 Sport i Zabawa
+                </h3>
+                <div className="mb-6">
+                  <h4 className="font-bold text-white text-lg">
+                    Boisko do Siatkówki
+                  </h4>
+                  <p className="text-sm text-gray-400">
+                    Profesjonalne boisko na piasku.
+                  </p>
+                </div>
+                <div className="mb-6">
+                  <h4 className="font-bold text-white text-lg">
+                    Dmuchaniec Gigant
+                  </h4>
+                  <p className="text-sm text-gray-400">8x3 metry radości.</p>
+                </div>
+              </div>
 
-      <div className="w-full max-w-xs">
-        <h3 className="text-xl text-cyan-400 font-bold mb-6 border-b border-cyan-400 inline-block">
-          🌲 Las i Historia
-        </h3>
-        <div className="mb-6">
-          <h4 className="font-bold text-white text-lg">Velo Baltica</h4>
-          <p className="text-sm text-gray-400">
-            Trasa R10 pod bramą.
-          </p>
-        </div>
-        <div className="mb-6">
-          <h4 className="font-bold text-white text-lg">Grodzisko</h4>
-          <p className="text-sm text-gray-400">
-            Idź przez las obok Grodziska.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+              <div className="w-full max-w-xs">
+                <h3 className="text-xl text-cyan-400 font-bold mb-6 border-b border-cyan-400 inline-block">
+                  🌲 Las i Historia
+                </h3>
+                <div className="mb-6">
+                  <h4 className="font-bold text-white text-lg">Velo Baltica</h4>
+                  <p className="text-sm text-gray-400">
+                    Trasa R10 pod bramą.
+                  </p>
+                </div>
+                <div className="mb-6">
+                  <h4 className="font-bold text-white text-lg">Grodzisko</h4>
+                  <p className="text-sm text-gray-400">
+                    Idź przez las obok Grodziska.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* --- 4. STREFA SMAKU --- */}
         <section
@@ -542,7 +606,7 @@ export default function Home() {
               </p>
             </div>
           </div>
-          {/* Dodajemy guzik do pełnej podstrony */}
+
           <div className="mt-8 text-center">
             <Link
               href="/zwierzeta"
@@ -560,9 +624,9 @@ export default function Home() {
               Dojazd i Mapa
             </h2>
 
-            {/* --- GŁÓWNY GRID: LEWO (TRASY + TRANSPORT) + PRAWO (MAPA + QR) --- */}
+            {/* --- GŁÓWNY GRID: LEWO + PRAWO --- */}
             <div className="grid md:grid-cols-2 gap-12 items-stretch">
-              {/* --- LEWA KOLUMNA --- */}
+              {/* --- LEWA KOLUMNA: CZASY DOJAZDU + TRANSPORT --- */}
               <div className="flex flex-col">
                 <div className="flex-grow-0">
                   <h3 className="text-2xl font-bold text-white mb-8">
@@ -613,7 +677,6 @@ export default function Home() {
                   </h4>
 
                   <div className="space-y-4 flex-grow">
-                    {/* Kolejka wąskotorowa */}
                     <div className="pb-4 border-b border-slate-700">
                       <h5 className="font-bold text-white mb-2 flex items-center gap-2">
                         🚂 Kolejka wąskotorowa
@@ -632,7 +695,6 @@ export default function Home() {
                       </a>
                     </div>
 
-                    {/* Busy / autobusy */}
                     <div className="flex-grow">
                       <h5 className="font-bold text-white mb-2 flex items-center gap-2">
                         🚌 Busy i autobusy
@@ -671,9 +733,8 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* --- PRAWA KOLUMNA: MAPA + KAFEL Z QR --- */}
+              {/* --- PRAWA KOLUMNA: MAPA + QR --- */}
               <div className="flex flex-col gap-6 h-full">
-                {/* MAPA */}
                 <div className="w-full h-[320px] md:h-[340px] lg:h-[360px] rounded-2xl overflow-hidden border-2 border-slate-700 shadow-2xl">
                   <iframe
                     src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2971.428472227397!2d16.06177308520643!3d54.25293009659703!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1spl!2spl!4v1764192910586!5m2!1spl!2spl"
@@ -688,7 +749,6 @@ export default function Home() {
                   />
                 </div>
 
-                {/* KAFEL Z QR - WYSOKOŚĆ DOPASOWANA DO TRANSPORTU PUBLICZNEGO */}
                 <div className="p-6 bg-slate-800 rounded-lg border border-slate-700 flex flex-col justify-center h-full">
                   <h4 className="font-bold text-yellow-500 mb-3">
                     📍 Adres do nawigacji
@@ -700,7 +760,7 @@ export default function Home() {
 
                   <div className="flex justify-center mt-2">
                     <img
-                      src="/api/qr" 
+                      src="/api/qr"
                       alt="Kod QR z linkiem do nawigacji do Morskiej Polany"
                       width={140}
                       height={140}
@@ -777,7 +837,9 @@ export default function Home() {
                     kursują co 30–60 min.
                   </div>
                   <div>
-                    <strong className="text-white">Kolejka wąskotorowa:</strong>{" "}
+                    <strong className="text-white">
+                      Kolejka wąskotorowa:
+                    </strong>{" "}
                     ok. 45 minut, tylko w sezonie.
                   </div>
                 </div>
@@ -801,7 +863,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- SEKCJA OPINII --- */}
+        {/* --- 7. OPINIE --- */}
         <section className="py-24 bg-slate-900 border-t border-slate-800">
           <div className="max-w-6xl mx-auto text-center">
             <h2 className="text-4xl font-black uppercase text-yellow-500 mb-4">
@@ -838,12 +900,12 @@ export default function Home() {
         </section>
       </div>
 
-      {/* --- STOPKA Z NEWSLETTEREM (FULL WIDTH, MOŻE TAK ZOSTAĆ) --- */}
+      {/* --- 8. STOPKA Z NEWSLETTEREM --- */}
       <footer
         id="kontakt"
         className="bg-black py-16 text-center border-t border-slate-800"
       >
-        {/* --- KARTA NEWSLETTERA --- */}
+        {/* --- NEWSLETTER --- */}
         <div className="bg-yellow-500 text-slate-900 p-8 rounded-xl max-w-md mx-auto mb-16 shadow-[0_0_40px_rgba(234,179,8,0.3)]">
           <h3 className="text-2xl font-black mb-2">NEWSLETTER</h3>
           <p className="mb-4 font-bold opacity-80">
@@ -851,7 +913,6 @@ export default function Home() {
           </p>
 
           <form action={subscribe} className="flex gap-2 justify-center mb-4">
-            {/* --- LABEL DLA INPUTA (A11Y) --- */}
             <label htmlFor="newsletter-email" className="sr-only">
               Adres e-mail do newslettera
             </label>
@@ -872,7 +933,6 @@ export default function Home() {
             </button>
           </form>
 
-          {/* --- CHECKBOX RODO Z LABEL (A11Y) --- */}
           <div className="text-xs flex items-center justify-center gap-2 font-bold opacity-70">
             <input
               id="newsletter-rodo"
@@ -893,7 +953,7 @@ export default function Home() {
           ul. Wisławy Szymborskiej 5, 76-032 Mielno
         </div>
 
-        {/* --- GŁÓWNY KONTAKT (TEL/MAIL) --- */}
+        {/* --- GŁÓWNY KONTAKT --- */}
         <div className="text-2xl font-bold text-yellow-500 mb-8 flex justify-center gap-4 items-center flex-wrap">
           <a href="tel:607607058" className="hover:text-white transition">
             📞 607 607 058
@@ -907,7 +967,7 @@ export default function Home() {
           </a>
         </div>
 
-        {/* --- DODATKOWE BOKSY INFO --- */}
+        {/* --- BOKSY INFO --- */}
         <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8 mb-8 text-left px-6 md:px-0">
           <div className="bg-slate-900 p-6 rounded-lg border border-slate-700">
             <h4 className="font-bold text-yellow-500 mb-3">
